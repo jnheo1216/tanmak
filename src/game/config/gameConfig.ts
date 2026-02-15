@@ -31,6 +31,18 @@ export interface GameConfig {
     bulletDespawnMargin: number;
     bulletAngleJitterRad: number;
   };
+  patterns: {
+    primaryId: string;
+    splitBurstId: string;
+    spiralSeederId: string;
+    splitBurstUnlockSec: number;
+    spiralSeederUnlockSec: number;
+    splitBurstChanceMid: number;
+    splitBurstChanceLate: number;
+    spiralSeederChanceMid: number;
+    spiralSeederChanceLate: number;
+    splitBurstLateSec: number;
+  };
   ultimate: {
     maxGauge: number;
   };
@@ -82,6 +94,18 @@ export const gameConfig: GameConfig = {
     bulletRadius: 6,
     bulletDespawnMargin: 32,
     bulletAngleJitterRad: 0.28
+  },
+  patterns: {
+    primaryId: "edge-shot",
+    splitBurstId: "split-burst-shot",
+    spiralSeederId: "spiral-seeder-shot",
+    splitBurstUnlockSec: 22,
+    spiralSeederUnlockSec: 48,
+    splitBurstChanceMid: 0.3,
+    splitBurstChanceLate: 0.48,
+    spiralSeederChanceMid: 0.14,
+    spiralSeederChanceLate: 0.26,
+    splitBurstLateSec: 65
   },
   ultimate: {
     maxGauge: 100

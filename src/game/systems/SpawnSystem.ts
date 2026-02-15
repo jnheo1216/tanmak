@@ -8,7 +8,7 @@ interface BulletSpawnParams {
   state: EngineState;
   config: GameConfig;
   difficulty: DifficultyTier;
-  pattern: BulletPatternDefinition;
+  pickPattern: () => BulletPatternDefinition;
   rng: Rng;
   nextEntityId: () => string;
   dtMs: number;
@@ -18,7 +18,7 @@ export const updateBulletSpawning = ({
   state,
   config,
   difficulty,
-  pattern,
+  pickPattern,
   rng,
   nextEntityId,
   dtMs
@@ -31,6 +31,9 @@ export const updateBulletSpawning = ({
     if (state.bullets.length >= difficulty.maxBullets) {
       continue;
     }
+
+    const pattern = pickPattern();
+    state.activePatternId = pattern.id;
 
     const spawns = pattern.spawn(
       {
@@ -54,6 +57,8 @@ export const updateBulletSpawning = ({
         alive: true,
         radius: spawn.radius,
         damage: spawn.damage,
+        ageMs: 0,
+        behavior: spawn.behavior ? { ...spawn.behavior } : undefined,
         position: { ...spawn.position },
         velocity: { ...spawn.velocity }
       });

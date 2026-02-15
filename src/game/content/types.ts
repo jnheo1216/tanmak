@@ -1,4 +1,4 @@
-import type { DifficultyTier, ItemKind, Vector2 } from "../entities/types";
+import type { BulletBehavior, DifficultyTier, ItemKind, Vector2 } from "../entities/types";
 
 export interface CharacterDefinition {
   id: string;
@@ -29,6 +29,7 @@ export interface BulletSpawn {
   velocity: Vector2;
   radius: number;
   damage: number;
+  behavior?: BulletBehavior;
 }
 
 export interface BulletSpawnContext {

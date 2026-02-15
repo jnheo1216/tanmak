@@ -41,10 +41,36 @@ export class CanvasRenderer {
     ctx.strokeRect(1, 1, width - 2, height - 2);
 
     for (const bullet of state.bullets) {
+      const splitter = bullet.behavior?.type === "split-on-timeout";
+      const spiralEmitter = bullet.behavior?.type === "spiral-emitter";
       ctx.beginPath();
-      ctx.fillStyle = "#ff6b6b";
+      ctx.fillStyle = spiralEmitter ? "#76e0ff" : splitter ? "#ffb366" : "#ff6b6b";
       ctx.arc(bullet.position.x, bullet.position.y, bullet.radius, 0, Math.PI * 2);
       ctx.fill();
+
+      if (splitter) {
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(255, 238, 194, 0.85)";
+        ctx.lineWidth = 1.5;
+        ctx.arc(bullet.position.x, bullet.position.y, bullet.radius + 2.5, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      if (spiralEmitter) {
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(198, 247, 255, 0.9)";
+        ctx.lineWidth = 1.6;
+        ctx.arc(bullet.position.x, bullet.position.y, bullet.radius + 3.2, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const markAngle = (bullet.ageMs / 1000) * 7;
+        const markX = bullet.position.x + Math.cos(markAngle) * (bullet.radius + 1.8);
+        const markY = bullet.position.y + Math.sin(markAngle) * (bullet.radius + 1.8);
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(235, 255, 255, 0.95)";
+        ctx.arc(markX, markY, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
     for (const item of state.items) {

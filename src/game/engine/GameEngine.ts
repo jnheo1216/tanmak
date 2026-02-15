@@ -9,6 +9,7 @@ import type { EngineState, UltimateFxState } from "./engineState";
 import { togglePauseState } from "../state/ScreenStateMachine";
 import { Rng } from "../utils/rng";
 import { collectTouchedItems, resolveBulletCollisions } from "../systems/CollisionSystem";
+import { updateBurstBullets } from "../systems/BurstSystem";
 import { pickDifficultyTier } from "../systems/DifficultySystem";
 import { clampGauge, updateItemSpawning } from "../systems/ItemSystem";
 import {
@@ -159,12 +160,11 @@ export class BulletHellGameEngine implements GameEngine {
       }
     }
 
-    const pattern = this.registry.getBulletPattern(this.state.activePatternId);
     updateBulletSpawning({
       state: this.state,
       config: this.config,
       difficulty,
-      pattern,
+      pickPattern: () => this.registry.getBulletPattern(this.pickActivePatternId()),
       rng: this.rng,
       nextEntityId: this.nextEntityId,
       dtMs
@@ -180,6 +180,12 @@ export class BulletHellGameEngine implements GameEngine {
     });
 
     updateBulletMovement(this.state.bullets, dtSec);
+    updateBurstBullets({
+      state: this.state,
+      dtMs,
+      nextEntityId: this.nextEntityId,
+      maxBullets: difficulty.maxBullets
+    });
     updateItemMovement(this.state.items, dtSec);
 
     this.state.bullets = cullOutOfBoundsBullets(
@@ -235,7 +241,7 @@ export class BulletHellGameEngine implements GameEngine {
       nowMs: 0,
       bulletSpawnTimerMs: this.config.difficultyTiers[0]?.spawnIntervalMs ?? 800,
       itemSpawnTimerMs: this.config.items.spawnIntervalMs,
-      activePatternId: "edge-shot",
+      activePatternId: this.config.patterns.primaryId,
       activeCharacterId: player.characterId,
       player,
       bullets: [],
@@ -257,7 +263,7 @@ export class BulletHellGameEngine implements GameEngine {
       nowMs: 0,
       bulletSpawnTimerMs: this.config.difficultyTiers[0]?.spawnIntervalMs ?? 800,
       itemSpawnTimerMs: this.config.items.spawnIntervalMs,
-      activePatternId: "edge-shot",
+      activePatternId: this.config.patterns.primaryId,
       activeCharacterId: player.characterId,
       player,
       bullets: [],
@@ -342,5 +348,39 @@ export class BulletHellGameEngine implements GameEngine {
     if (this.state.ultimateFx.elapsedMs >= this.state.ultimateFx.durationMs) {
       this.state.ultimateFx.active = false;
     }
+  }
+
+  private pickActivePatternId(): string {
+    const elapsedSec = this.state.elapsedMs / 1000;
+    const {
+      primaryId,
+      splitBurstId,
+      spiralSeederId,
+      splitBurstUnlockSec,
+      spiralSeederUnlockSec,
+      splitBurstChanceMid,
+      splitBurstChanceLate,
+      spiralSeederChanceMid,
+      spiralSeederChanceLate,
+      splitBurstLateSec
+    } = this.config.patterns;
+
+    if (elapsedSec < splitBurstUnlockSec) {
+      return primaryId;
+    }
+
+    if (elapsedSec < spiralSeederUnlockSec) {
+      const splitChance = elapsedSec >= splitBurstLateSec ? splitBurstChanceLate : splitBurstChanceMid;
+      return this.rng.next() < splitChance ? splitBurstId : primaryId;
+    }
+
+    const splitChance = elapsedSec >= splitBurstLateSec ? splitBurstChanceLate : splitBurstChanceMid;
+    const spiralChance = elapsedSec >= splitBurstLateSec ? spiralSeederChanceLate : spiralSeederChanceMid;
+
+    const roll = this.rng.next();
+    if (roll < spiralChance) {
+      return spiralSeederId;
+    }
+    return this.rng.next() < splitChance ? splitBurstId : primaryId;
   }
 }

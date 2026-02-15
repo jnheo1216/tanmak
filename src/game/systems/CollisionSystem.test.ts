@@ -36,7 +36,8 @@ const createState = (): EngineState => ({
       position: { x: 105, y: 100 },
       radius: 6,
       velocity: { x: 0, y: 0 },
-      damage: 12
+      damage: 12,
+      ageMs: 0
     }
   ],
   items: [],

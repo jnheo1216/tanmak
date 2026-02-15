@@ -43,9 +43,35 @@ export interface PlayerEntity extends BaseEntity {
   ultimateId: string;
 }
 
+export interface SplitOnTimeoutBehavior {
+  type: "split-on-timeout";
+  triggerAfterMs: number;
+  fragmentCount: number;
+  fragmentSpeedMultiplier: number;
+  fragmentRadiusMultiplier: number;
+  fragmentDamageMultiplier: number;
+  startAngleRad: number;
+}
+
+export interface SpiralEmitterBehavior {
+  type: "spiral-emitter";
+  emitIntervalMs: number;
+  nextEmitAtMs: number;
+  bulletsPerEmission: number;
+  turnRateRad: number;
+  currentAngleRad: number;
+  emitSpeedMultiplier: number;
+  emitRadiusMultiplier: number;
+  emitDamageMultiplier: number;
+}
+
+export type BulletBehavior = SplitOnTimeoutBehavior | SpiralEmitterBehavior;
+
 export interface BulletEntity extends BaseEntity {
   velocity: Vector2;
   damage: number;
+  ageMs: number;
+  behavior?: BulletBehavior;
 }
 
 export type ItemKind = "score" | "gauge" | "heal";
