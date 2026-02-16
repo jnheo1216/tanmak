@@ -73,9 +73,38 @@ export class CanvasRenderer {
       }
     }
 
+    for (const barrier of state.barriers) {
+      if (!barrier.alive) {
+        continue;
+      }
+
+      ctx.save();
+      ctx.shadowColor = "rgba(108, 245, 255, 0.55)";
+      ctx.shadowBlur = 14;
+      ctx.beginPath();
+      ctx.fillStyle = "rgba(88, 220, 255, 0.28)";
+      ctx.arc(barrier.position.x, barrier.position.y, barrier.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.strokeStyle = "rgba(180, 252, 255, 0.95)";
+      ctx.lineWidth = 1.8;
+      ctx.arc(barrier.position.x, barrier.position.y, barrier.radius + 1.2, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
     for (const item of state.items) {
       const color =
-        item.kind === "score" ? "#ffd166" : item.kind === "gauge" ? "#00d1ff" : "#7dff9b";
+        item.kind === "score"
+          ? "#ffd166"
+          : item.kind === "gauge"
+            ? "#00d1ff"
+            : item.kind === "heal"
+              ? "#7dff9b"
+              : item.kind === "equip-magnet"
+                ? "#ffb3ff"
+                : "#9fe5ff";
       ctx.beginPath();
       ctx.fillStyle = color;
       ctx.arc(item.position.x, item.position.y, item.radius, 0, Math.PI * 2);

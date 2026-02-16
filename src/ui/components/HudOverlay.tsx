@@ -7,6 +7,8 @@ interface HudOverlayProps {
 export const HudOverlay = ({ snapshot }: HudOverlayProps): JSX.Element => {
   const hpRatio = snapshot.maxHp > 0 ? snapshot.hp / snapshot.maxHp : 0;
   const gaugeRatio = snapshot.ultimateGauge / 100;
+  const barrierCooldownLabel =
+    snapshot.equipmentBarrierLevel > 0 ? `${snapshot.equipmentBarrierCooldownSec.toFixed(1)}s` : "-";
 
   return (
     <>
@@ -33,6 +35,17 @@ export const HudOverlay = ({ snapshot }: HudOverlayProps): JSX.Element => {
           <div className="hud-label">SCORE</div>
           <div className="score">{snapshot.score}</div>
           <div className="hud-value">BEST {snapshot.bestScore}</div>
+        </div>
+
+        <div className="hud-box equipment-box">
+          <div className="hud-label">장착 아이템</div>
+          <div className="hud-value">자석 Lv {snapshot.equipmentMagnetLevel}</div>
+          <div className="hud-value">흡인 범위 {snapshot.equipmentMagnetRange}</div>
+          <div className="hud-value">베리어 생성기 Lv {snapshot.equipmentBarrierLevel}</div>
+          <div className="hud-value">
+            베리어 {snapshot.equipmentBarrierCount}/{snapshot.equipmentBarrierMax}
+          </div>
+          <div className="hud-value">다음 생성 {barrierCooldownLabel}</div>
         </div>
       </div>
 

@@ -1,4 +1,12 @@
-import type { BulletEntity, ItemEntity, PlayerEntity, ScreenState, Vector2 } from "../entities/types";
+import type {
+  BarrierEntity,
+  BulletEntity,
+  EquipmentState,
+  ItemEntity,
+  PlayerEntity,
+  ScreenState,
+  Vector2
+} from "../entities/types";
 
 export interface UltimateFxState {
   active: boolean;
@@ -22,10 +30,13 @@ export interface EngineState {
   nowMs: number;
   bulletSpawnTimerMs: number;
   itemSpawnTimerMs: number;
+  barrierSpawnCooldownMs: number;
   activePatternId: string;
   activeCharacterId: string;
   player: PlayerEntity;
+  equipment: EquipmentState;
   bullets: BulletEntity[];
   items: ItemEntity[];
+  barriers: BarrierEntity[];
   ultimateFx: UltimateFxState;
 }

@@ -23,6 +23,12 @@ export interface GameSnapshot {
   ultimateReady: boolean;
   elapsedSec: number;
   isPaused: boolean;
+  equipmentMagnetLevel: number;
+  equipmentMagnetRange: number;
+  equipmentBarrierLevel: number;
+  equipmentBarrierCount: number;
+  equipmentBarrierMax: number;
+  equipmentBarrierCooldownSec: number;
 }
 
 export interface BaseEntity {
@@ -74,12 +80,25 @@ export interface BulletEntity extends BaseEntity {
   behavior?: BulletBehavior;
 }
 
-export type ItemKind = "score" | "gauge" | "heal";
+export type ItemKind = "score" | "gauge" | "heal" | "equip-magnet" | "equip-barrier-generator";
+
+export type EquipmentType = "magnet" | "barrier-generator";
+
+export interface EquipmentState {
+  magnetLevel: number;
+  barrierGeneratorLevel: number;
+  maxLevel: number;
+}
 
 export interface ItemEntity extends BaseEntity {
   velocity: Vector2;
   kind: ItemKind;
   definitionId: string;
+}
+
+export interface BarrierEntity extends BaseEntity {
+  orbitAngleRad: number;
+  orbitDistance: number;
 }
 
 export interface DifficultyTier {

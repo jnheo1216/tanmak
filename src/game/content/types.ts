@@ -1,4 +1,4 @@
-import type { BulletBehavior, DifficultyTier, ItemKind, Vector2 } from "../entities/types";
+import type { BulletBehavior, DifficultyTier, EquipmentType, ItemKind, Vector2 } from "../entities/types";
 
 export interface CharacterDefinition {
   id: string;
@@ -57,6 +57,7 @@ export interface ItemEffectContext {
   addScore: (amount: number) => void;
   addGauge: (amount: number) => void;
   heal: (amount: number) => void;
+  upgradeEquipment: (type: EquipmentType) => void;
 }
 
 export interface ItemWeightState {

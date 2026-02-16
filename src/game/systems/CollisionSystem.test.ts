@@ -13,6 +13,7 @@ const createState = (): EngineState => ({
   nowMs: 0,
   bulletSpawnTimerMs: 500,
   itemSpawnTimerMs: 1000,
+  barrierSpawnCooldownMs: 0,
   activePatternId: "edge-shot",
   activeCharacterId: "default-runner",
   player: {
@@ -29,6 +30,11 @@ const createState = (): EngineState => ({
     characterId: "default-runner",
     ultimateId: "screen-clear"
   },
+  equipment: {
+    magnetLevel: 0,
+    barrierGeneratorLevel: 0,
+    maxLevel: 5
+  },
   bullets: [
     {
       id: "bullet-1",
@@ -41,6 +47,7 @@ const createState = (): EngineState => ({
     }
   ],
   items: [],
+  barriers: [],
   ultimateFx: {
     active: false,
     elapsedMs: 0,

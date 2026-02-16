@@ -58,6 +58,17 @@ export interface GameConfig {
     };
     weights: Record<ItemKind, number>;
   };
+  equipment: {
+    maxLevel: number;
+    duplicatePickupScore: number;
+    magnetRangeByLevel: number[];
+    magnetPullSpeedByLevel: number[];
+    barrierIntervalMsByLevel: number[];
+    barrierMaxCountByLevel: number[];
+    barrierRadius: number;
+    barrierOrbitDistance: number;
+    barrierOrbitAngularSpeedRad: number;
+  };
   difficultyTiers: DifficultyTier[];
 }
 
@@ -123,8 +134,21 @@ export const gameConfig: GameConfig = {
     weights: {
       score: 55,
       gauge: 25,
-      heal: 20
+      heal: 20,
+      "equip-magnet": 10,
+      "equip-barrier-generator": 8
     }
+  },
+  equipment: {
+    maxLevel: 5,
+    duplicatePickupScore: 180,
+    magnetRangeByLevel: [120, 170, 220, 280, 340],
+    magnetPullSpeedByLevel: [140, 180, 220, 260, 300],
+    barrierIntervalMsByLevel: [5000, 4200, 3500, 2900, 2400],
+    barrierMaxCountByLevel: [1, 1, 2, 2, 3],
+    barrierRadius: 10,
+    barrierOrbitDistance: 34,
+    barrierOrbitAngularSpeedRad: 1.8
   },
   difficultyTiers: [
     {

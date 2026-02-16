@@ -115,7 +115,7 @@ button.secondary {
   left: 10px;
   right: 10px;
   display: grid;
-  grid-template-columns: 1fr 1fr 180px;
+  grid-template-columns: 1fr 1fr 180px 240px;
   gap: 10px;
 }
 
@@ -164,6 +164,10 @@ button.secondary {
   font-weight: 700;
 }
 
+.equipment-box .hud-value {
+  line-height: 1.2;
+}
+
 .hud-bottom {
   position: absolute;
   bottom: 10px;
@@ -196,6 +200,12 @@ button.secondary {
 .center-overlay.paused {
   background: rgba(7, 18, 32, 0.5);
   font-size: clamp(36px, 8vw, 64px);
+}
+
+@media (max-width: 1180px) {
+  .hud-top {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 800px) {

@@ -19,7 +19,13 @@ const emptySnapshot: GameSnapshot = {
   ultimateGauge: 100,
   ultimateReady: true,
   elapsedSec: 0,
-  isPaused: false
+  isPaused: false,
+  equipmentMagnetLevel: 0,
+  equipmentMagnetRange: 0,
+  equipmentBarrierLevel: 0,
+  equipmentBarrierCount: 0,
+  equipmentBarrierMax: 0,
+  equipmentBarrierCooldownSec: 0
 };
 
 export const App = (): JSX.Element => {

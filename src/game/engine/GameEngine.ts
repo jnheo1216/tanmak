@@ -1,16 +1,23 @@
+import { loadBestScore, saveBestScore } from "../../storage/scoreStorage";
 import { gameConfig, type GameConfig } from "../config/gameConfig";
 import { createDefaultRegistry } from "../content/defaultContent";
 import { ContentRegistry } from "../content/registry";
 import type { ItemEffectContext } from "../content/types";
 import type { GameSnapshot, InputSnapshot, PlayerEntity } from "../entities/types";
 import { CanvasRenderer } from "../render/CanvasRenderer";
-import { loadBestScore, saveBestScore } from "../../storage/scoreStorage";
-import type { EngineState, UltimateFxState } from "./engineState";
 import { togglePauseState } from "../state/ScreenStateMachine";
-import { Rng } from "../utils/rng";
-import { collectTouchedItems, resolveBulletCollisions } from "../systems/CollisionSystem";
 import { updateBurstBullets } from "../systems/BurstSystem";
+import { collectTouchedItems, resolveBulletCollisions } from "../systems/CollisionSystem";
 import { pickDifficultyTier } from "../systems/DifficultySystem";
+import {
+  applyMagnetAttraction,
+  getBarrierMaxCountForLevel,
+  getMagnetRangeForLevel,
+  resolveBarrierBulletCollisions,
+  updateBarrierGenerator,
+  updateBarrierOrbit,
+  upgradeEquipmentLevel
+} from "../systems/EquipmentSystem";
 import { clampGauge, updateItemSpawning } from "../systems/ItemSystem";
 import {
   cullOutOfBoundsBullets,
@@ -21,6 +28,8 @@ import {
 } from "../systems/MovementSystem";
 import { updateBulletSpawning } from "../systems/SpawnSystem";
 import { tryActivateUltimate } from "../systems/UltimateSystem";
+import { Rng } from "../utils/rng";
+import type { EngineState, UltimateFxState } from "./engineState";
 
 export interface GameEngine {
   startRun(seed?: number): void;
@@ -126,9 +135,14 @@ export class BulletHellGameEngine implements GameEngine {
   }
 
   getSnapshot(): GameSnapshot {
+    const barrierLevel = this.state.equipment.barrierGeneratorLevel;
+
     return {
       screenState: this.state.screenState,
-      countdownSec: this.state.screenState === "COUNTDOWN" ? Math.max(1, Math.ceil(this.state.countdownMsRemaining / 1000)) : 0,
+      countdownSec:
+        this.state.screenState === "COUNTDOWN"
+          ? Math.max(1, Math.ceil(this.state.countdownMsRemaining / 1000))
+          : 0,
       score: Math.floor(this.state.score),
       bestScore: this.state.bestScore,
       hp: Math.ceil(this.state.player.hp),
@@ -136,7 +150,13 @@ export class BulletHellGameEngine implements GameEngine {
       ultimateGauge: Math.floor(this.state.player.ultimateGauge),
       ultimateReady: this.state.player.ultimateGauge >= this.state.player.ultimateGaugeMax,
       elapsedSec: this.state.elapsedMs / 1000,
-      isPaused: this.state.screenState === "PAUSED"
+      isPaused: this.state.screenState === "PAUSED",
+      equipmentMagnetLevel: this.state.equipment.magnetLevel,
+      equipmentMagnetRange: getMagnetRangeForLevel(this.state.equipment.magnetLevel, this.config),
+      equipmentBarrierLevel: barrierLevel,
+      equipmentBarrierCount: this.state.barriers.length,
+      equipmentBarrierMax: getBarrierMaxCountForLevel(barrierLevel, this.config),
+      equipmentBarrierCooldownSec: barrierLevel <= 0 ? 0 : Math.max(0, this.state.barrierSpawnCooldownMs / 1000)
     };
   }
 
@@ -188,6 +208,10 @@ export class BulletHellGameEngine implements GameEngine {
     });
     updateItemMovement(this.state.items, dtSec);
 
+    applyMagnetAttraction(this.state, this.config, dtSec);
+    updateBarrierGenerator(this.state, this.config, dtMs, this.nextEntityId);
+    updateBarrierOrbit(this.state, this.config, dtSec);
+
     this.state.bullets = cullOutOfBoundsBullets(
       this.state.bullets,
       this.config.world,
@@ -195,12 +219,14 @@ export class BulletHellGameEngine implements GameEngine {
     );
     this.state.items = cullOutOfBoundsItems(this.state.items, this.config.world, this.config.combat.bulletDespawnMargin);
 
+    resolveBarrierBulletCollisions(this.state);
     resolveBulletCollisions(this.state, this.config.player.invulnerabilityMs);
 
+    const effectContext = this.createItemEffectContext();
     const collectedItems = collectTouchedItems(this.state);
     for (const item of collectedItems) {
       const itemDef = this.registry.getItem(item.definitionId);
-      itemDef.apply(this.createItemEffectContext());
+      itemDef.apply(effectContext);
     }
 
     if (this.state.player.hp <= 0) {
@@ -224,6 +250,12 @@ export class BulletHellGameEngine implements GameEngine {
       },
       heal: (amount: number) => {
         this.state.player.hp = Math.min(this.state.player.maxHp, this.state.player.hp + amount);
+      },
+      upgradeEquipment: (type) => {
+        const result = upgradeEquipmentLevel(this.state, type, this.config);
+        if (!result.leveledUp && result.reachedMax) {
+          this.state.score += this.config.equipment.duplicatePickupScore;
+        }
       }
     };
   }
@@ -241,11 +273,14 @@ export class BulletHellGameEngine implements GameEngine {
       nowMs: 0,
       bulletSpawnTimerMs: this.config.difficultyTiers[0]?.spawnIntervalMs ?? 800,
       itemSpawnTimerMs: this.config.items.spawnIntervalMs,
+      barrierSpawnCooldownMs: 0,
       activePatternId: this.config.patterns.primaryId,
       activeCharacterId: player.characterId,
       player,
+      equipment: this.createEquipmentState(),
       bullets: [],
       items: [],
+      barriers: [],
       ultimateFx: this.createUltimateFxState()
     };
   }
@@ -263,11 +298,14 @@ export class BulletHellGameEngine implements GameEngine {
       nowMs: 0,
       bulletSpawnTimerMs: this.config.difficultyTiers[0]?.spawnIntervalMs ?? 800,
       itemSpawnTimerMs: this.config.items.spawnIntervalMs,
+      barrierSpawnCooldownMs: 0,
       activePatternId: this.config.patterns.primaryId,
       activeCharacterId: player.characterId,
       player,
+      equipment: this.createEquipmentState(),
       bullets: [],
       items: [],
+      barriers: [],
       ultimateFx: this.createUltimateFxState()
     };
   }
@@ -291,6 +329,14 @@ export class BulletHellGameEngine implements GameEngine {
       invulnerableUntilMs: 0,
       ultimateGauge: this.config.ultimate.maxGauge,
       ultimateGaugeMax: this.config.ultimate.maxGauge
+    };
+  }
+
+  private createEquipmentState() {
+    return {
+      magnetLevel: 0,
+      barrierGeneratorLevel: 0,
+      maxLevel: this.config.equipment.maxLevel
     };
   }
 

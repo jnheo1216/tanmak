@@ -32,5 +32,23 @@ export const createDefaultItems = (config: GameConfig): ItemDefinition[] => {
     }
   };
 
-  return [scoreItem, gaugeItem, healItem];
+  const magnetEquipItem: ItemDefinition = {
+    id: "item-equip-magnet",
+    kind: "equip-magnet",
+    apply: (ctx) => {
+      ctx.upgradeEquipment("magnet");
+    },
+    weight: () => config.items.weights["equip-magnet"]
+  };
+
+  const barrierGeneratorEquipItem: ItemDefinition = {
+    id: "item-equip-barrier-generator",
+    kind: "equip-barrier-generator",
+    apply: (ctx) => {
+      ctx.upgradeEquipment("barrier-generator");
+    },
+    weight: () => config.items.weights["equip-barrier-generator"]
+  };
+
+  return [scoreItem, gaugeItem, healItem, magnetEquipItem, barrierGeneratorEquipItem];
 };
