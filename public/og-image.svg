@@ -1,0 +1,44 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ogTitle ogDesc">
+  <title id="ogTitle">TANMAK Open Graph Image</title>
+  <desc id="ogDesc">TANMAK bullet-hell survival game social card.</desc>
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="1120" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#071A2F"/>
+      <stop offset="1" stop-color="#040A13"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(920 120) rotate(135) scale(420 260)">
+      <stop stop-color="#00A5FF" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#00A5FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(210 110) rotate(129) scale(340 240)">
+      <stop stop-color="#00D1B2" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#00D1B2" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="iconBg" x1="140" y1="96" x2="440" y2="382" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A1E35"/>
+      <stop offset="1" stop-color="#09172A"/>
+    </linearGradient>
+    <linearGradient id="iconRing" x1="160" y1="122" x2="392" y2="356" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00D1B2"/>
+      <stop offset="1" stop-color="#00A5FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glowA)"/>
+  <rect width="1200" height="630" fill="url(#glowB)"/>
+
+  <rect x="126" y="96" width="320" height="320" rx="58" fill="url(#iconBg)" stroke="#1E385A" stroke-width="4"/>
+  <circle cx="286" cy="256" r="106" stroke="url(#iconRing)" stroke-width="10" stroke-dasharray="18 16"/>
+  <path d="M286 190L315 270H257L286 190Z" fill="#E8F0FF"/>
+  <circle cx="286" cy="256" r="13" fill="#00D1B2"/>
+  <circle cx="286" cy="150" r="10" fill="#00A5FF"/>
+  <circle cx="390" cy="256" r="10" fill="#FF5F6D"/>
+  <circle cx="344" cy="342" r="10" fill="#00D1B2"/>
+  <circle cx="225" cy="340" r="8" fill="#B8DEFF"/>
+  <circle cx="184" cy="234" r="8" fill="#C2D8FF"/>
+
+  <text x="500" y="284" fill="#E8F0FF" font-family="Space Grotesk, Noto Sans KR, Segoe UI, sans-serif" font-size="140" font-weight="700" letter-spacing="7">TANMAK</text>
+  <text x="502" y="352" fill="#9ED9FF" font-family="Space Grotesk, Noto Sans KR, Segoe UI, sans-serif" font-size="40" font-weight="600" letter-spacing="2">웹 탄막 회피 게임</text>
+  <text x="502" y="405" fill="#D6E8FF" font-family="Space Grotesk, Noto Sans KR, Segoe UI, sans-serif" font-size="30" font-weight="500">INFINITE BULLET SURVIVAL</text>
+</svg>

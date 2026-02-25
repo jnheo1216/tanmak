@@ -1,0 +1,20 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="favTitle">
+  <title id="favTitle">TANMAK Favicon</title>
+  <defs>
+    <linearGradient id="favBg" x1="5" y1="4" x2="58" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A1E35"/>
+      <stop offset="1" stop-color="#09172A"/>
+    </linearGradient>
+    <linearGradient id="favRing" x1="12" y1="11" x2="54" y2="53" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00D1B2"/>
+      <stop offset="1" stop-color="#00A5FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#favBg)" stroke="#1F395B" stroke-width="2"/>
+  <circle cx="32" cy="32" r="18" stroke="url(#favRing)" stroke-width="3" stroke-dasharray="5 4"/>
+  <path d="M32 22L38 38H26L32 22Z" fill="#E8F0FF"/>
+  <circle cx="32" cy="14" r="3" fill="#00A5FF"/>
+  <circle cx="48" cy="32" r="3" fill="#FF5F6D"/>
+  <circle cx="22" cy="46" r="3" fill="#00D1B2"/>
+</svg>

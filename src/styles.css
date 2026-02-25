@@ -88,6 +88,22 @@ button.secondary {
   text-align: center;
 }
 
+.brand-logo {
+  width: min(280px, 92%);
+  height: auto;
+  margin: 2px auto 10px;
+  display: block;
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.32));
+}
+
+.brand-tagline {
+  margin-top: 0;
+  font-size: 13px;
+  color: #9ed9ff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .overlay-card h1,
 .overlay-card h2 {
   margin: 0 0 8px;

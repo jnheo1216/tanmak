@@ -1,4 +1,4 @@
-# GAMM: 웹 탄막 회피 게임
+# TANMAK: 웹 탄막 회피 게임
 
 React + Vite + TypeScript + Canvas 2D로 구현한 무한 생존형 탄막 회피 게임입니다.
 
